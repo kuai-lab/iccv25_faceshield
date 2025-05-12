@@ -39,7 +39,7 @@ To prepare the pre-trained weights for inference, follow these steps:
     iccv25_faceshield/
     ├── models/
     ├── attack.py/
-    ├── models/
+    ├── utils/
     │   ├── dct.py/
     │   ├── faceparser/
     │   ├── ...
