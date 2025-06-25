@@ -1,4 +1,4 @@
-# FaceShield: Defending Facial Image against Deepfake Threats (under review)
+# FaceShield: Defending Facial Image against Deepfake Threats (ICCV 2025)
 Jaehwan Jeong, Sumin In, Sieun Kim, Hannie Shin, Jongheon Jeong, Sang Ho Yoon, Jaewook Chung, Sangpil Kim
 
 Official Pytorch Implementation of FaceShield.
