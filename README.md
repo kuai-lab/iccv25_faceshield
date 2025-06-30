@@ -18,7 +18,7 @@
 </div>
 
 <p align="center">
-  <img src="./assets/teaser.png" alt="FaceShield Teaser" style="width:100%;"/>
+  <img src="./assets/teaser.png" alt="FaceShield Teaser" style="width:75%;"/>
 </p>
 
 ## **🔍 TL;DR**  
