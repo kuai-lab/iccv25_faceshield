@@ -1,6 +1,5 @@
 <p align="center">
-  <h1 align="center"><strong>[ICCV 2025] FaceShield: Defending Facial Image 
-  against Deepfake Threats</strong></h1>
+  <h1 align="center"><strong>[ICCV 2025] FaceShield: Defending Facial Image<br>against Deepfake Threats</strong></h1>
 </p>
 
 <p align="center">
