@@ -1,5 +1,13 @@
-# FaceShield: Defending Facial Image against Deepfake Threats (ICCV 2025)
-Jaehwan Jeong, Sumin In, Sieun Kim, Hannie Shin, Jongheon Jeong, Sang Ho Yoon, Jaewook Chung, Sangpil Kim
+<p align="center">
+  <h1 align="center"><strong>[ICCV 2025] FaceShield: Defending Facial Image against Deepfake Threats</strong></h1>
+</p>
+
+<p align="center">
+  Jaehwan Jeong<sup>1</sup>, Sumin In<sup>1</sup>, Sieun Kim<sup>1</sup>, Hannie Shin<sup>1</sup>, Jongheon Jeong<sup>1</sup>,<br>
+  Sang Ho Yoon<sup>2</sup>, Jaewook Chung<sup>3</sup>, Sangpil Kim<sup>1†</sup><br><br>
+  <sup>1</sup>Korea University, &nbsp; <sup>2</sup>KAIST, &nbsp; <sup>3</sup>Samsung Research
+</p>
+
 
 Official Pytorch Implementation of FaceShield.
 
