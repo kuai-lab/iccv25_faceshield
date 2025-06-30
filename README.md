@@ -65,9 +65,14 @@ To prepare the pre-trained weights for inference, follow these steps:
     └── ...
     ```
 
-## **📜 Citation**  
-If you find our work useful, please consider citing:
+## **🛡️ Run the Protection**
 
+<p align="center">
+  <img src="./assets/pipeline.png" alt="FaceShield overview" style="width:100%;"/>
+</p>
+
+
+## **📜 Citation**  
 ```tex
 @article{jeong2024faceshield,
   title={FaceShield: Defending Facial Image against Deepfake Threats},
