@@ -40,7 +40,7 @@ To prepare the pre-trained weights for inference, follow these steps:
 1. Download the ArcFace pre-trained weights from [ArcFace Pretrained Weights link](https://drive.google.com/drive/folders/1lmKkNUsoebszm3W5xhnw1ybKVwozMYwO?usp=drive_link).
 
 2. Extract the downloaded ArcFace and place it in the `./models` directory. Your directory structure should look like this:
-    ```
+    ```swift
     iccv25_faceshield/
     ├── models/
     │   ├── arcface50_checkpoint.tar/
@@ -54,7 +54,7 @@ To prepare the pre-trained weights for inference, follow these steps:
 3. Download the utility files and other checkpoints from [util files link](https://drive.google.com/drive/folders/15Nu0m4kt-UyaCg4VmU1nL8eTnU7sfJXw?usp=drive_link).
 
 4. Extract the downloaded utils directory and place it in the `./utils` directory. Your directory structure should look like this:
-    ```
+    ```swift
     iccv25_faceshield/
     ├── models/
     ├── attack.py/
