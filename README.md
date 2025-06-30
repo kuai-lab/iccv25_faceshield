@@ -34,10 +34,10 @@ conda env create -f environment.yaml
 conda activate faceshield
 ```
 
-## Data Preparation
+## 📂 **Model Setup**
 To prepare the pre-trained weights for inference, follow these steps:
 
-1. Download the ArcFace pre-trained weights from [ArcFace Pretrained Wieghts link](https://drive.google.com/drive/folders/1lmKkNUsoebszm3W5xhnw1ybKVwozMYwO?usp=drive_link).
+1. Download the ArcFace pre-trained weights from [ArcFace Pretrained Weights link](https://drive.google.com/drive/folders/1lmKkNUsoebszm3W5xhnw1ybKVwozMYwO?usp=drive_link).
 
 2. Extract the downloaded ArcFace and place it in the `./models` directory. Your directory structure should look like this:
     ```
@@ -64,3 +64,24 @@ To prepare the pre-trained weights for inference, follow these steps:
     │   ├── ...
     └── ...
     ```
+
+## **📜 Citation**  
+If you find our work useful, please consider citing:
+
+```tex
+@article{jeong2024faceshield,
+  title={FaceShield: Defending Facial Image against Deepfake Threats},
+  author={Jeong, Jaehwan and In, Sumin and Kim, Sieun and Shin, Hannie and Jeong, Jongheon and Yoon, Sang Ho and Chung, Jaewook and Kim, Sangpil},
+  journal={arXiv preprint arXiv:2412.09921},
+  year={2024}
+}
+```
+
+## Acknowledgement
+
+Our code is based on these wonderful repos:
+
+* [Stable Diffusion](https://github.com/CompVis/latent-diffusion?tab=readme-ov-file)
+* [CLIP](https://github.com/openai/CLIP)
+* [MTCNN](https://github.com/ipazc/mtcnn)
+* [ArcFace](https://github.com/deepinsight/insightface)
