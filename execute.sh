@@ -12,18 +12,17 @@ resize_shape=$(($2))
 proj_func=$3
 attn_func=$4
 attn_threshold=$(echo "$5" | bc)
-mtcnn_func=$6
-arc_func=$7
-total_iter=$(($8))
-noise_clamp=$(($9))
-step_size=$((${10}))
-image_path=${11}
+arc_func=$6
+total_iter=$(($7))
+noise_clamp=$(($8))
+step_size=$((${9}))
+image_path=${10}
 
 CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 torchrun \
---nproc_per_node=1 --nnodes=1 --master_addr=127.0.0.1 --master_port=11001 --node_rank=0 \
+--nproc_per_node=1 --nnodes=1 --master_addr=127.0.0.1 --master_port=07730 --node_rank=0 \
 ddpwrapper.py \
 --module 'attack' \
---seed 1 \
+--seed 7730 \
 --model_path $pretrained_model_name_or_path \
 --vae_model_path $vae_model_path \
 --unet_config $unet_config \
@@ -38,7 +37,6 @@ ddpwrapper.py \
 --proj_func $proj_func \
 --attn_func $attn_func \
 --attn_threshold $attn_threshold \
---mtcnn_func $mtcnn_func \
 --arc_func $arc_func \
 --total_iter $total_iter \
 --noise_clamp $noise_clamp \

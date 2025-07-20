@@ -215,7 +215,7 @@ def attack(args, gpu_num, gpu_no, **kwargs):
                     adv_face = torch.clamp(adv_face, min=0, max=255)
                     
                     # ================== MTCNN attack ================== #
-                    mtcnn_loss = 0
+                    # mtcnn_loss = 0
                     # mtcnn_loss = mtcnn_attack(2 * (adv_face/255) - 1, loss_fn=mtcnn_func, loss=mtcnn_loss, idx=7, device=device)
                     # if i >= (args.total_iter - 5) and mtcnn_loss == 0: break
                     
@@ -242,7 +242,7 @@ def attack(args, gpu_num, gpu_no, **kwargs):
                     unet_loss = (-1) * clip_loss + (+1) * attn_loss
                     
                     # ===================== PGD ===================== #
-                    total_loss = 9*mtcnn_loss + 4*id_loss + 1*unet_loss
+                    total_loss = 4*id_loss + 1*unet_loss
                     total_loss.backward(retain_graph=True)
                     new_delta = args.step_size * torch.sign(delta.grad)
 
