@@ -20,6 +20,9 @@
 
 ## **🔍 TL;DR**  
 We present FaceShield, a novel and imperceptible noise injection method that protects facial images from unauthorized use by disrupting a wide range of deepfake models—including both diffusion- and GAN-based approaches. It achieves state-of-the-art robustness, high imperceptibility, and strong transferability across datasets.
+<p align="center">
+  <img src="./assets/intro.png" alt="FaceShield intro" style="width:90%;"/>
+</p>
 
 ## **⚙️ Installation**  
 Tested on Ubuntu 22.04 + CUDA 12.4 + Python 3.8 (RTX A6000)  
