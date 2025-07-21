@@ -12,9 +12,6 @@
   <a href="https://arxiv.org/abs/2412.09921">
     <img src="https://img.shields.io/badge/arXiv-2412.11520-red?logo=arxiv" alt="arXiv Badge">
   </a>
-  <a href="">
-    <img src="https://img.shields.io/badge/Project-Page-blue?logo=website" alt="Project Page">
-  </a>
 </div>
 
 <p align="center">
