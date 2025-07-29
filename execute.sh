@@ -3,8 +3,6 @@ vae_model_path="stabilityai/sd-vae-ft-mse"
 unet_config="utils/unet/unet_config15.json"
 pretrained_ip_adapter_path="utils/unet/ip_adapter/ip-adapter_sd15.bin"
 image_encoder_path="h94/IP-Adapter"
-pretrained_facedetector_path="utils/insightface_func/models"
-pretrained_landmark_path='utils/landmark/shape_predictor_68_face_landmarks.dat'
 pretrained_arcface50_path='models/arcface50_checkpoint.tar'
 pretrained_arcface100_path='models/arcface100_checkpoint.tar'
 save_path=$1
@@ -28,8 +26,6 @@ ddpwrapper.py \
 --unet_config $unet_config \
 --pretrained_ip_adapter_path $pretrained_ip_adapter_path \
 --image_encoder_path $image_encoder_path \
---pretrained_facedetector_path $pretrained_facedetector_path \
---pretrained_landmark_path $pretrained_landmark_path \
 --pretrained_arcface50_path $pretrained_arcface50_path \
 --pretrained_arcface100_path $pretrained_arcface100_path \
 --save_path $save_path \

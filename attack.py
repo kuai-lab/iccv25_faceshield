@@ -1,10 +1,15 @@
+import os
+import argparse
+import datetime
+
 import torch
-import argparse, datetime, os
 from tqdm import tqdm
 from omegaconf import OmegaConf
 from pytorch_lightning import seed_everything
 from transformers import CLIPTokenizer, CLIPTextModel, CLIPVisionModelWithProjection
 from diffusers import AutoencoderKL
+
+# IP-Adapter
 from utils.unet.ip_adapter.ip_adapter import ImageProjModel
 from utils.unet.ip_adapter.utils import is_torch2_available
 if is_torch2_available():
@@ -12,60 +17,46 @@ if is_torch2_available():
 else:
     from utils.unet.ip_adapter.attention_processor import IPAttnProcessor, AttnProcessor
 
-from utils.utils import get_loss_function, compute_vae_encodings, face_detection_mask, get_filelist, merge_image, save_png, AttentionStore
-from utils.unet.unet_attack import AttackUnet_IP_all, AttackCLIP
+# Utility functions
+from utils.utils import (
+    get_loss_function, compute_vae_encodings, face_detection_mask, get_filelist,
+    merge_image, save_png, scale_tensor, create_line_mask, apply_gaussian, AttentionStore
+)
 
-from utils.dct import dct_pass_filter, make_dct_basis, blockfy, encode, decode, deblockfy
+# Attack modules
+from utils.unet.unet_attack import AttackUnet_IP_all, AttackCLIP
 from utils.landmark.mtcnn_attack import mtcnn_attack
 from utils.landmark.arcface_attack import AttackArcFace
 
-import torch
-import torch.nn.functional as F
-import random
-
-def input_diversity(input_tensor, prob=0.5, image_size=512):
-    if random.uniform(0, 1) > prob:
-        return input_tensor  # Return original input with probability (1 - prob)
-
-    # Compute padding dimensions
-    pad_top = random.randint(0, image_size // 10)  # Padding up to 10% of the size
-    pad_bottom = random.randint(0, image_size // 10)
-    pad_left = random.randint(0, image_size // 10)
-    pad_right = random.randint(0, image_size // 10)
-
-    # Apply random padding
-    padded = F.pad(input_tensor, (pad_left, pad_right, pad_top, pad_bottom), mode='constant', value=0)
-
-    # Crop back to the original size to ensure consistency
-    cropped = padded[:, :, pad_top:pad_top+image_size, pad_left:pad_left+image_size]
-    
-    return cropped
+# DCT tools
+from utils.dct import dct_pass_filter, make_dct_basis, blockfy, encode, decode, deblockfy
 
 
 def get_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--seed", type=int, default=1, help="seed for seed_everything")
-    parser.add_argument("--model_path", type=str, default=None, help="pretrained SD model path or name")
-    parser.add_argument("--vae_model_path", type=str, default=None, help="pretrained vae model path or name")
-    parser.add_argument("--unet_config", type=str, default=None, help="Attack unet config file")
-    parser.add_argument("--pretrained_ip_adapter_path", type=str, default=None, help="pretrained ip adapter model path or name")
-    parser.add_argument("--image_encoder_path", type=str, default=None, help="pretrained Image encoder model path or name")
-    parser.add_argument("--pretrained_facedetector_path", type=str, default=None, help="pretrained Face Detector model path or name")
-    parser.add_argument("--pretrained_landmark_path", type=str, default=None, help="pretrained Face Landmark model path or name")
-    parser.add_argument("--pretrained_arcface50_path", type=str, default=None, help="pretrained ArcFace50 model path or name")
-    parser.add_argument("--pretrained_arcface100_path", type=str, default=None, help="pretrained ArcFace100 model path or name")
     
-    parser.add_argument("--save_path", type=str, default=None, help="Results saving path")
-    parser.add_argument("--resize_shape", type=int, default=512, help="Resize image shape")
-    parser.add_argument("--proj_func", type=str, default="AdaIN_mean", help="Selected loss function for Projection Loss")
-    parser.add_argument("--attn_func", type=str, default="AdaIN_mean", help="Selected loss function for Attention Loss")
-    parser.add_argument("--attn_threshold", type=float, default=0.2, help="Attention map Variance threshold")
-    parser.add_argument("--mtcnn_func", type=str, default="AdaIN_mean", help="Selected loss function for MTCNN Loss")
-    parser.add_argument("--arc_func", type=str, default="AdaIN_mean", help="Selected loss function for Arcface Loss")
-    parser.add_argument("--total_iter", type=int, default=50, help="Number of perturbating iterations")
-    parser.add_argument("--noise_clamp", type=int, default=20, help="Noise clamp")
-    parser.add_argument("--step_size", type=float, default=1., help="unet attack step size")
-    parser.add_argument("--image_path", type=str, default=None, help="Source image path")
+    # Seed & model paths
+    parser.add_argument("--seed", type=int, default=1, help="Random seed (used with seed_everything)")
+    parser.add_argument("--model_path", type=str, default=None, help="Path or name of pretrained Stable Diffusion model")
+    parser.add_argument("--vae_model_path", type=str, default=None, help="Path or name of pretrained VAE model")
+    parser.add_argument("--unet_config", type=str, default=None, help="YAML config for attack UNet")
+    parser.add_argument("--pretrained_ip_adapter_path", type=str, default=None, help="Path to pretrained IP-Adapter weights")
+    parser.add_argument("--image_encoder_path", type=str, default=None, help="Path to pretrained image encoder (e.g., CLIP)")
+    parser.add_argument("--pretrained_arcface50_path", type=str, default=None, help="Path to pretrained ArcFace-50 model")
+    parser.add_argument("--pretrained_arcface100_path", type=str, default=None, help="Path to pretrained ArcFace-100 model")
+    
+    # FaceShield settings
+    parser.add_argument("--save_path", type=str, default=None, help="Directory to save results")
+    parser.add_argument("--resize_shape", type=int, default=512, help="Resize image to this square resolution")
+    parser.add_argument("--proj_func", type=str, default="l1", help="Loss function for projection loss")
+    parser.add_argument("--attn_func", type=str, default="l2", help="Loss function for attention loss")
+    parser.add_argument("--attn_threshold", type=float, default=0.2, help="Threshold for masking low-attention regions")
+    parser.add_argument("--mtcnn_func", type=str, default=False, help="Loss function for MTCNN feature loss")
+    parser.add_argument("--arc_func", type=str, default="cosine", help="Loss function for ArcFace feature loss")
+    parser.add_argument("--total_iter", type=int, default=30, help="Number of PGD iterations")
+    parser.add_argument("--noise_clamp", type=int, default=12, help="Clamp value for adversarial noise (L∞ norm)")
+    parser.add_argument("--step_size", type=float, default=1., help="Step size per PGD iteration")
+    parser.add_argument("--image_path", type=str, default=None, help="Input image or directory path")
 
     return parser
 
@@ -89,6 +80,7 @@ def attack(args, gpu_num, gpu_no, **kwargs):
     image_encoder.requires_grad_(False).to(device)
     face_embedder50.requires_grad_(False).to(device)
     face_embedder100.requires_grad_(False).to(device)
+    
     # ================================================== IP_Adapter =============================================== #
     # IP-Adapter
     image_proj_model = ImageProjModel(
@@ -178,7 +170,7 @@ def attack(args, gpu_num, gpu_no, **kwargs):
             os.makedirs(save_dir, exist_ok=True)
             
             # Image load
-            face, mask, land_mask, back, coor = face_detection_mask(src_list_rank[indice], save_dir, args.resize_shape, args.pretrained_facedetector_path, args.pretrained_landmark_path, device)
+            face, _, _, back, coor = face_detection_mask(src_list_rank[indice], save_dir, args.resize_shape, device)
             gt_face = face.clone().detach()
 
             # Choice Loss function
@@ -213,13 +205,12 @@ def attack(args, gpu_num, gpu_no, **kwargs):
                 for i, _ in enumerate(epochs):
                     adv_face = (255*gt_face) + delta
                     adv_face = torch.clamp(adv_face, min=0, max=255)
-                    
+                                       
                     # ================== MTCNN attack ================== #
-                    # mtcnn_loss = 0
-                    # mtcnn_loss = mtcnn_attack(2 * (adv_face/255) - 1, loss_fn=mtcnn_func, loss=mtcnn_loss, idx=7, device=device)
-                    # if i >= (args.total_iter - 5) and mtcnn_loss == 0: break
-                    
-                    # ================== ArcFace attack ================== #
+                    mtcnn_loss = 0
+                    mtcnn_loss = mtcnn_attack(2 * (adv_face/255) - 1, loss_fn=mtcnn_func, loss=mtcnn_loss, device=device)
+
+                    # ========== ArcFace Identity Attack ========== #
                     id_loss_50 = 0
                     id_loss_100 = 0
                     adv_50, adv_100 = id_preprocess.preprocess(adv_face/255)
@@ -229,7 +220,7 @@ def attack(args, gpu_num, gpu_no, **kwargs):
                     id_loss_100 = arc_func(adv_id_100, gt_id_100)
                     id_loss = (-1) * id_loss_50 + (-1) * id_loss_100
                     
-                    # ==================== Diff-Cond attack ===================== #
+                    # ========== Diff-Conditioned UNet Attack ========== #
                     clip_loss = 0
                     attn_loss = 0
                     adv_preprocessed = image_preprocess(adv_face/255)
@@ -241,18 +232,17 @@ def attack(args, gpu_num, gpu_no, **kwargs):
                     attn_loss = unet(latents_query, timestep, stacked_encoder_hidden_states, loss_fn=attn_func, loss=attn_loss, gt_attn_map=var_controller.attn_map.copy()) # UNet Loss
                     unet_loss = (-1) * clip_loss + (+1) * attn_loss
                     
-                    # ===================== PGD ===================== #
-                    total_loss = 4*id_loss + 1*unet_loss
+                    # ========== PGD Update ========== #
+                    total_loss = 9*mtcnn_loss + 4*id_loss + 1*unet_loss
                     total_loss.backward(retain_graph=True)
                     new_delta = args.step_size * torch.sign(delta.grad)
 
-                    # gaussain blur #
-                    # if mtcnn_loss != 0:
+                    # ========== Smooth with Gaussian Blur ========== #
                     d_rgb = scale_tensor(new_delta)
                     mask = create_line_mask(save_dir, d_rgb)
                     new_delta = apply_gaussian(save_dir, new_delta, mask, 9, 5)
                     
-                    # LPF #
+                    # ========== Low-Pass Filter in DCT Domain ========== #
                     delta.data -= new_delta
                     grad_block, pad_size = blockfy(delta.data, N)
                     grad_dct = encode(grad_block, DCT_basis)
@@ -260,76 +250,15 @@ def attack(args, gpu_num, gpu_no, **kwargs):
                     grad_block_passed = decode(grad_dct_passed, DCT_basis)
                     delta.data = deblockfy(grad_block_passed, pad_size)
                     
-                    # l ball #
+                    # ========== Clamp in ℓ∞ Norm Ball ========== #
                     delta.data  = torch.clamp(delta.data , min=-args.noise_clamp, max=args.noise_clamp)
                     delta.grad = None
                     del mtcnn_loss, clip_loss, attn_loss, unet_loss, total_loss, id_loss_50, id_loss_100, id_loss
                     torch.cuda.empty_cache()
 
             face = torch.clamp((gt_face*255) + delta, 0, 255)/255
-            
-            save_png(f"{save_dir}/adv(cropped)", face.squeeze(0))
-            
-            os.makedirs(f"{args.save_path}/outputs", exist_ok=True)
-            save_png(f"{args.save_path}/outputs/[{filename_list[indice]}]", face.squeeze(0))
-            
-            merged = merge_image(face, back, save_dir, coor)
-            save_png(f"{save_dir}/adv(merged)", merged)
+            save_png(f"{save_dir}/protected", face.squeeze(0))
 
-import torch.nn.functional as F
-def scale_tensor(tensor):
-    if len(tensor.shape) == 3:
-        tensor = tensor.unsqueeze(0)
-    elif len(tensor.shape) == 2:
-        tensor = tensor[None,None,:,:]
-
-    max_val = tensor.max()
-    min_val = tensor.min()
-    normalized_tensor = (tensor - min_val) / (max_val - min_val)
-    return normalized_tensor
-
-def calculate_gradients(image, device='cuda'):
-    sobel_x = torch.tensor([
-        [1, 0, -1], 
-        [2, 0, -2], 
-        [1, 0, -1]], dtype=torch.float32)[None,None,:,:].repeat(3,1,1,1).to(device)
-    sobel_y = torch.tensor([
-        [1, 2, 1], 
-        [0, 0, 0], 
-        [-1, -2, -1]], dtype=torch.float32)[None,None,:,:].repeat(3,1,1,1).to(device)
-    grad_x = F.conv2d(image, sobel_x, padding=1, groups=3)
-    grad_y = F.conv2d(image, sobel_y, padding=1, groups=3)
-    return grad_x, grad_y
-
-def create_line_mask(save_path, image):
-    grad_x, grad_y = calculate_gradients(image)
-    grad_x_abs = torch.abs(grad_x)
-    grad_y_abs = torch.abs(grad_y)
-    mask = torch.where((grad_x_abs == grad_x_abs.max()) | (grad_y_abs == grad_y_abs.max()), 1.0, 0.0)
-    
-    kernel = torch.ones((3, 1, 9, 9), device=mask.device)
-    dilated_mask = F.conv2d(mask, kernel, padding=kernel.shape[-1]//2, groups=3)
-    dilated_mask = torch.clamp(dilated_mask, 0, 1)
-
-    return dilated_mask
-
-def gaussian_kernel(size, sigma):
-    x = torch.arange(size).float() - (size - 1) / 2
-    kernel = torch.exp(-0.5 * (x / sigma) ** 2)
-    kernel = kernel / kernel.sum()
-    return torch.outer(kernel, kernel)[None,None,:,:].repeat(3,1,1,1)
-
-def apply_gaussian(save_path, image, mask, kernel_size=5, sigma=1, device='cuda'):
-    if len(image.shape) == 3:
-        image = image.unsqueeze(0)
-    elif len(image.shape) == 2:
-        image = image[None,None,:,:]
-        
-    kernel_2d = gaussian_kernel(kernel_size, sigma).to(device)
-    blurred_image = F.conv2d(image, kernel_2d, padding=kernel_size // 2, groups=3)
-    adjusted_image = blurred_image * mask + image * (1 - mask)
-    
-    return adjusted_image
 
 if __name__ == '__main__':
     parser = get_parser()
