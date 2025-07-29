@@ -104,8 +104,29 @@ sh execute.sh $save_path $resize_shape $proj_func $attn_func $attn_threshold \
 ```
 
 ## Acknowledgement
-```text
-This work was supported by Culture, Sports and Tourism R&D Program through the Korea Creative Content Agency grant funded by the Ministry of Culture, Sports and Tourism (International Collaborative Research and Global Talent Development for the Development of Copyright Management and Protection Technologies for Generative AI, RS-2024-00345025, 47%; Research on neural watermark technology for copyright protection of generative AI 3D content, RS-2024-00348469, 25%), the National Research Foundation of Korea(NRF) grant funded by the Korea government(MSIT)(RS-2025-00521602, 25%), Institute of Information & communications Technology Planning & Evaluation (IITP) & ITRC(Information Technology Research Center) grant funded by the Korea government(MSIT) (No.RS-2019-II190079, Artificial Intelligence Graduate School Program(Korea University), 1%; IITP-2025-RS-2024-00436857, 1%; IITP-2025-RS-2025-02304828, Artificial Intelligence Star Fellowship Support Program to Nurture the Best Talents, 1%), and Artificial intelligence industrial convergence cluster development project funded by the Ministry of Science and ICT(MSIT, Korea)&Gwangju Metropolitan City.
+```
+This work was supported by Culture, Sports and Tourism
+R&D Program through the Korea Creative Content Agency
+grant funded by the Ministry of Culture, Sports and
+Tourism (International Collaborative Research and Global
+Talent Development for the Development of Copyright
+Management and Protection Technologies for Generative
+AI, RS-2024-00345025, 47%; Research on neural water-
+mark technology for copyright protection of generative AI
+3D content, RS-2024-00348469, 25%), the National Re-
+search Foundation of Korea(NRF) grant funded by the
+Korea government(MSIT)(RS-2025-00521602, 25%), In-
+stitute of Information & communications Technology Plan-
+ning & Evaluation (IITP) & ITRC(Information Technol-
+ogy Research Center) grant funded by the Korea gov-
+ernment(MSIT) (No.RS-2019-II190079, Artificial Intelli-
+gence Graduate School Program(Korea University), 1%;
+IITP-2025-RS-2024-00436857, 1%; IITP-2025-RS-2025-
+02304828, Artificial Intelligence Star Fellowship Support
+Program to Nurture the Best Talents, 1%), and Artifi-
+cial intelligence industrial convergence cluster development
+project funded by the Ministry of Science and ICT(MSIT,
+Korea)&Gwangju Metropolitan City.
 ```
 
 Our code is based on these wonderful repos:
