@@ -10,7 +10,7 @@
 
 <div align="center">
   <a href="https://arxiv.org/abs/2412.09921">
-    <img src="https://img.shields.io/badge/arXiv-2412.11520-red?logo=arxiv" alt="arXiv Badge">
+    <img src="https://img.shields.io/badge/arXiv-2412.09921-red?logo=arxiv" alt="arXiv Badge">
   </a>
   <a href="./assets/Poster.png">
     <img src="https://img.shields.io/badge/Poster-blue" alt="Poster">
