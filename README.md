@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  Jaehwan Jeong<sup>1</sup>, Sumin In<sup>1</sup>, Sieun Kim<sup>1</sup>, Hannie Shin<sup>1</sup>,<br> 
+  <a href="https://jaehwan-j.github.io">Jaehwan Jeong</a><sup>1</sup>, Sumin In<sup>1</sup>, Sieun Kim<sup>1</sup>, Hannie Shin<sup>1</sup>,<br> 
   Jongheon Jeong<sup>1</sup>, Sang Ho Yoon<sup>2</sup>, Jaewook Chung<sup>3</sup>, Sangpil Kim<sup>1†</sup><br><br>
   <sup>1</sup>Korea University, &nbsp; <sup>2</sup>KAIST, &nbsp; <sup>3</sup>Samsung Research
 </p>
@@ -11,6 +11,9 @@
 <div align="center">
   <a href="https://arxiv.org/abs/2412.09921">
     <img src="https://img.shields.io/badge/arXiv-2412.11520-red?logo=arxiv" alt="arXiv Badge">
+  </a>
+  <a href="./assets/Poster.png">
+    <img src="https://img.shields.io/badge/Poster-blue" alt="Poster">
   </a>
 </div>
 
