@@ -98,11 +98,12 @@ sh execute.sh $save_path $resize_shape $proj_func $attn_func $attn_threshold \
 
 ## **📜 Citation**  
 ```tex
-@article{jeong2024faceshield,
-  title={FaceShield: Defending Facial Image against Deepfake Threats},
+@inproceedings{jeong2025faceshield,
+  title={Faceshield: Defending facial image against deepfake threats},
   author={Jeong, Jaehwan and In, Sumin and Kim, Sieun and Shin, Hannie and Jeong, Jongheon and Yoon, Sang Ho and Chung, Jaewook and Kim, Sangpil},
-  journal={arXiv preprint arXiv:2412.09921},
-  year={2024}
+  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  pages={10364--10374},
+  year={2025}
 }
 ```
 
