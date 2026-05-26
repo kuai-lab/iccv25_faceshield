@@ -9,11 +9,17 @@
 </p>
 
 <div align="center">
+  <a href="https://openaccess.thecvf.com/content/ICCV2025/html/Jeong_FaceShield_Defending_Facial_Image_against_Deepfake_Threats_ICCV_2025_paper.html">
+    <img src="https://img.shields.io/badge/ICCV-2025-blue" alt="ICCV 2025">
+  </a>
+  <a href="./assets/Poster.png">
+    <img src="https://img.shields.io/badge/Poster-blueviolet" alt="Poster">
+  </a>
   <a href="https://arxiv.org/abs/2412.09921">
     <img src="https://img.shields.io/badge/arXiv-2412.09921-red?logo=arxiv" alt="arXiv Badge">
   </a>
-  <a href="./assets/Poster.png">
-    <img src="https://img.shields.io/badge/Poster-blue" alt="Poster">
+  <a href="https://jaehwan-j.github.io/projects/faceshield/faceshield.html">
+    <img src="https://img.shields.io/badge/Project-Page-green?logo=website" alt="Project Page">
   </a>
 </div>
 
