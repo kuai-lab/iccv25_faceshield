@@ -49,11 +49,10 @@ To prepare the pre-trained weights for inference, follow these steps:
 > **Note**: All pretrained weights used here are from publicly available sources.  
 > We only reorganized them to match the codebase structure, without modifying the original weights.
 
-1. Download the ArcFace pre-trained weights from [ArcFace Pretrained Weights link](https://kuaicv.synology.me/weights/iccv2025/FaceShield/models.zip).
-
-(If the link above doesn't work, please use this backup link: [Backup](https://drive.google.com/drive/folders/1lmKkNUsoebszm3W5xhnw1ybKVwozMYwO?usp=drive_link))
-
-2. Extract the downloaded ArcFace and place it in the `./models` directory. Your directory structure should look like this:
+1. Download the ArcFace pre-trained weights from [ArcFace Pretrained Weights link](https://kuaicv.synology.me/weights/iccv2025/FaceShield/models.zip).  
+   (If the link above doesn't work, please use this backup link: [Backup](https://drive.google.com/drive/folders/1lmKkNUsoebszm3W5xhnw1ybKVwozMYwO?usp=drive_link))
+   
+3. Extract the downloaded ArcFace and place it in the `./models` directory. Your directory structure should look like this:
     ```swift
     iccv25_faceshield/
     ├── models/
